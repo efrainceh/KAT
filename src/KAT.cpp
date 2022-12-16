@@ -40,6 +40,7 @@ void KAT::readSamples() {
 
 void KAT::calculateSamplesKmers() {
     int kmerSize = input.kmerSize;
+    result.kmerSize = input.kmerSize;
     for (int indexOfSample = 0; indexOfSample < samples.size(); indexOfSample++) {
         samples[indexOfSample].createKmers(kmerSize);
     }

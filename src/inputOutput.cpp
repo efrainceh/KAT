@@ -95,8 +95,10 @@ void AlignmentWriter::writeMatchesOfIndex(int indexOfTI, MultipleMatches &multip
 
 // -----------------------------------------------------------------------------------------------
 
-void TableWriter::writeTable(Matrix table_, Filenames referenceFilenames_, Filenames sampleFilenames_) {
-    /*
+void TableWriter::writeTable(Matrix table_, int kmerSize_, Filenames referenceFilenames_, Filenames sampleFilenames_) {
+    /* 
+    Table example:
+
             Sample1 Sample2 Sample3
         Ref1    1       5       0
         Ref2    20      3       2
@@ -109,41 +111,38 @@ void TableWriter::writeTable(Matrix table_, Filenames referenceFilenames_, Filen
     sampleFilenames = sampleFilenames_;
     numberOfReferences = referenceFilenames.size();
     numberOfSamples = sampleFilenames.size();
-    writeSampleFilenames();
+    kmerSize = kmerSize_;
+    writeColumnNames();
     writeDataInTable();
 }
 
-void TableWriter::writeSampleFilenames() {
-    file << GENOME_COL_NAME << ',';
-    for (int col = 0; col < numberOfSamples; col++) {
+void TableWriter::writeColumnNames() {
+    for (int col = 0; col < COLUMNS.size(); col++) {
         if (isLastColumn(col)) {
-            file << sampleFilenames[col] << std::endl;
+            file << COLUMNS[col] << std::endl;
         } else {
-            file << sampleFilenames[col] << ',';
+            file << COLUMNS[col] << ',';
         }
     }
-    file << std::endl;
 }
 
 void TableWriter::writeDataInTable() {
-    for (int row = 0; row < numberOfReferences; row++) {
-        file << referenceFilenames[row] << ',';
-        writeSingleRowOfData(row);
+    for (int sampleNumber = 0; sampleNumber < numberOfSamples; sampleNumber++) {
+        writeSampleData(sampleNumber);
     }
 }
 
-void TableWriter::writeSingleRowOfData(int row) {
-    for (int col = 0; col < numberOfSamples; col++) {
-        if (isLastColumn(col)) {
-            file << table[row][col] << std::endl;
-        } else {
-            file << table[row][col] << ',';
-        }
-    }
+void TableWriter::writeSampleData(int sampleNumber) {
+    for (int referenceNumber = 0; referenceNumber < numberOfReferences; referenceNumber++) {
+        file << sampleFilenames[sampleNumber] << ',';
+        file << kmerSize << ',';
+        file << referenceFilenames[referenceNumber] << ',';
+        file << table[referenceNumber][sampleNumber] << std::endl;
+    }    
 }
 
 bool TableWriter::isLastColumn(int col) {
-    return col == numberOfSamples - 1;
+    return col == COLUMNS.size() - 1;
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -167,7 +166,7 @@ std::filesystem::path ResultsWriter::createResultsPath() {
 
 void ResultsWriter::writeResultsTable() {
     TableWriter writer(TABLE_FILENAME);
-    writer.writeTable(results.finalTable, results.referenceFilenames, results.sampleFilenames);
+    writer.writeTable(results.finalTable, results.kmerSize, results.referenceFilenames, results.sampleFilenames);
 }
 
 void ResultsWriter::writeResultsAlignmentFiles() {

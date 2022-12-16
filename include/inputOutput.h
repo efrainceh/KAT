@@ -14,13 +14,14 @@ struct Input {
     std::string pathToInputFolder;
     std::string filesSuffix;
     int kmerSize;
-    std::vector<int> kmerSizes;
+    //std::vector<int> kmerSizes;
 
 };
 
 struct Results {
 
     std::string pathToInputFolder;
+    int kmerSize;
     std::vector<Alignment> alignments;
     Filenames referenceFilenames;
     Filenames sampleFilenames;
@@ -83,23 +84,24 @@ class TableWriter : public BaseWriter {
 
     private:
         std::string OUTPUT_SUFFIX = ".csv";
-        std::string GENOME_COL_NAME = "genomes";
+        std::vector<std::string> COLUMNS{"sample", "kmer_size", "reference", "hits"};
         Matrix table;
         Filenames referenceFilenames;
         Filenames sampleFilenames;
         int numberOfReferences;
         int numberOfSamples;
+        int kmerSize;
 
         void createFilename();
-        void writeSampleFilenames();
+        void writeColumnNames();
+        void writeSampleData(int sampleNumber);
         void writeDataInTable();
-        void writeSingleRowOfData(int row);
         bool isLastColumn(int col);
 
     public:
         TableWriter(std::string filename_) : BaseWriter(filename_) { }
 
-        void writeTable(Matrix table_, Filenames referenceFilenames_, Filenames samplesFilenames_);
+        void writeTable(Matrix table_, int kmerSize, Filenames referenceFilenames_, Filenames samplesFilenames_);
 
 };
 
