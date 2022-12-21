@@ -101,11 +101,13 @@ Alignment ReferenceAligner::align(Sample sample) {
         matchesToReference[indexOfTI] = matchesPerTextIndex;
         totalNumberOfMatches += multipleAligner.getNumberOfMatches();
     }
+    calculateMatchPercentage();
     return createAlignment();
 }
 
 void ReferenceAligner::extractVarFromSample(Sample sample) {
     sampleID = sample.getID();
+    kmerSize = sample.getKmerSize();
     Kmers kmers = sample.getKmers();
     convertKmersMapToVector(kmers);
 }
@@ -116,6 +118,22 @@ void ReferenceAligner::convertKmersMapToVector(Kmers kmers) {
     }
 }
 
+void ReferenceAligner::calculateMatchPercentage() {
+    int possibleKmersInReference = calculatePossibleKmersInReference();
+    matchPercentage = 100 * ((double)totalNumberOfMatches / possibleKmersInReference);
+    std::cout << "hits :" << totalNumberOfMatches << std::endl;
+    std::cout << "possible kmers :" << possibleKmersInReference << std::endl;
+    std::cout << "percentage :" << matchPercentage  << std::endl;
+}
+
+int ReferenceAligner::calculatePossibleKmersInReference() {
+    int possibleKmersInReference = 0;
+    for (int seqSize : refSeqSizes) {
+        possibleKmersInReference += (seqSize - kmerSize + 1);
+    }
+    return possibleKmersInReference;
+}
+
 Alignment ReferenceAligner::createAlignment() {
     Alignment alignment;
     alignment.referenceID = referenceID;
@@ -124,6 +142,7 @@ Alignment ReferenceAligner::createAlignment() {
     alignment.sampleID = sampleID;
     alignment.sampleToRefMatches = matchesToReference;
     alignment.numberOfMatches = totalNumberOfMatches;
+    alignment.matchPercentage = matchPercentage;   
     return alignment;
 }
 

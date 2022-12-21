@@ -50,12 +50,15 @@ void KAT::alignAllSamplesToAllReferences() {
     for (Reference reference : references) {
         ReferenceAligner refAligner(reference);
         std::vector<int> totalMatchesToRefPerSample;
+        std::vector<double> totalPercentagesToRefPerSample;
         for (Sample sample: samples) {
             Alignment refAlignment = refAligner.align(sample);
             result.alignments.push_back(refAlignment);
             totalMatchesToRefPerSample.push_back(refAlignment.numberOfMatches);
+            totalPercentagesToRefPerSample.push_back(refAlignment.matchPercentage);
         }
-        result.finalTable.push_back(totalMatchesToRefPerSample);
+        result.hitTable.push_back(totalMatchesToRefPerSample);
+        result.percentageTable.push_back(totalPercentagesToRefPerSample);
     }
 }
 

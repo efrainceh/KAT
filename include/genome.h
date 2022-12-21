@@ -69,6 +69,7 @@ class Sample : public Genome {
         Sample() { }
 
         void createKmers(int kmerSize_);
+        int getKmerSize() { return kmerSize; }
         Kmers getKmers() { return kmers; }
         
 };

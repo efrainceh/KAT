@@ -7,6 +7,8 @@
 #include "fileFolders.h"
 #include "referenceAligner.h"
 
+typedef std::vector<std::vector<double>> doubleMatrix;
+
 std::ostream& operator<<(std::ostream &os, Matches &matches);
 
 struct Input {
@@ -25,7 +27,8 @@ struct Results {
     std::vector<Alignment> alignments;
     Filenames referenceFilenames;
     Filenames sampleFilenames;
-    Matrix finalTable;      // Total number of matches per sample per reference
+    Matrix hitTable;      // Total number of matches per sample per reference
+    doubleMatrix percentageTable;
 
 };
 
@@ -84,8 +87,10 @@ class TableWriter : public BaseWriter {
 
     private:
         std::string OUTPUT_SUFFIX = ".csv";
-        std::vector<std::string> COLUMNS{"sample", "kmer_size", "reference", "hits"};
+        std::vector<std::string> COLUMNS{"sample", "kmer_size", "reference", "hits", "percentage"};
+        char DELIMITER = ',';
         Matrix table;
+        doubleMatrix percentageTable;
         Filenames referenceFilenames;
         Filenames sampleFilenames;
         int numberOfReferences;
@@ -101,7 +106,7 @@ class TableWriter : public BaseWriter {
     public:
         TableWriter(std::string filename_) : BaseWriter(filename_) { }
 
-        void writeTable(Matrix table_, int kmerSize, Filenames referenceFilenames_, Filenames samplesFilenames_);
+        void writeTable(Matrix table_, doubleMatrix percentageTable_, int kmerSize, Filenames referenceFilenames_, Filenames samplesFilenames_);
 
 };
 

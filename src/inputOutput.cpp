@@ -95,7 +95,7 @@ void AlignmentWriter::writeMatchesOfIndex(int indexOfTI, MultipleMatches &multip
 
 // -----------------------------------------------------------------------------------------------
 
-void TableWriter::writeTable(Matrix table_, int kmerSize_, Filenames referenceFilenames_, Filenames sampleFilenames_) {
+void TableWriter::writeTable(Matrix table_, doubleMatrix percentageTable_, int kmerSize_, Filenames referenceFilenames_, Filenames sampleFilenames_) {
     /* 
     Table example:
 
@@ -107,6 +107,7 @@ void TableWriter::writeTable(Matrix table_, int kmerSize_, Filenames referenceFi
     */
     
     table = table_;
+    percentageTable = percentageTable_;
     referenceFilenames = referenceFilenames_;
     sampleFilenames = sampleFilenames_;
     numberOfReferences = referenceFilenames.size();
@@ -121,7 +122,7 @@ void TableWriter::writeColumnNames() {
         if (isLastColumn(col)) {
             file << COLUMNS[col] << std::endl;
         } else {
-            file << COLUMNS[col] << ',';
+            file << COLUMNS[col] << DELIMITER;
         }
     }
 }
@@ -134,10 +135,11 @@ void TableWriter::writeDataInTable() {
 
 void TableWriter::writeSampleData(int sampleNumber) {
     for (int referenceNumber = 0; referenceNumber < numberOfReferences; referenceNumber++) {
-        file << sampleFilenames[sampleNumber] << ',';
-        file << kmerSize << ',';
-        file << referenceFilenames[referenceNumber] << ',';
-        file << table[referenceNumber][sampleNumber] << std::endl;
+        file << sampleFilenames[sampleNumber] << DELIMITER;
+        file << kmerSize << DELIMITER;
+        file << referenceFilenames[referenceNumber] << DELIMITER;
+        file << table[referenceNumber][sampleNumber] << DELIMITER;
+        file << percentageTable[referenceNumber][sampleNumber] << std::endl;
     }    
 }
 
@@ -166,7 +168,7 @@ std::filesystem::path ResultsWriter::createResultsPath() {
 
 void ResultsWriter::writeResultsTable() {
     TableWriter writer(TABLE_FILENAME);
-    writer.writeTable(results.finalTable, results.kmerSize, results.referenceFilenames, results.sampleFilenames);
+    writer.writeTable(results.hitTable, results.percentageTable, results.kmerSize, results.referenceFilenames, results.sampleFilenames);
 }
 
 void ResultsWriter::writeResultsAlignmentFiles() {

@@ -18,6 +18,7 @@ struct Alignment {
     std::string sampleID;
     ReferenceMatches sampleToRefMatches;
     int numberOfMatches;
+    float matchPercentage;      // (number of unique hits to reference / total number of kmers in reference ) * 100 
 
 };
 
@@ -85,14 +86,18 @@ class ReferenceAligner {
         std::vector<int> refSeqSizes;
         std::string sampleID;
         TextIndeces TI;
+        int kmerSize;
         std::vector<std::string> vectorKmers;
         int totalNumberOfMatches;
+        float matchPercentage;
         MultipleMatches matchesPerTextIndex;
         ReferenceMatches matchesToReference;
 
         void extractVarFromReference(Reference reference);
         void extractVarFromSample(Sample sample);
         void convertKmersMapToVector(Kmers kmers);
+        void calculateMatchPercentage();
+        int calculatePossibleKmersInReference();
         Alignment createAlignment();
         
     public:
