@@ -5,18 +5,15 @@
 
 Input InputParser::parse(int argc, char* argv[]) {
     if (minimumNumberOfArguments(argc)) {
-        input.pathToInputFolder = argv[2];
-        input.filesSuffix = argv[3];
-        input.kmerSize = parseKmerSize(argv[4]);
+        input.projectName = argv[2];
+        input.pathToInputFolder = argv[3];
+        input.filesSuffix = argv[4];
+        input.kmerSize = parseKmerSize(argv[5]);
     } else {
-        throw std::out_of_range("The minimum number of inputs is 3.");
+        throw std::out_of_range("The minimum number of inputs is 4.");
     }
     return input;
 }
-
-// bool InputParser::correctNumberOfArguments(int numberOfArguments) {
-//     return numberOfArguments == CORRECT_NUMBER_OF_ARGUMENTS;
-// }
 
 bool InputParser::minimumNumberOfArguments(int numberOfArguments) {
     return numberOfArguments >= MINIMUM_NUMBER_OF_ARGUMENTS;
@@ -99,22 +96,31 @@ void TableWriter::writeTable(Matrix table_, doubleMatrix percentageTable_, int k
     /* 
     Table example:
 
-            Sample1 Sample2 Sample3
-        Ref1    1       5       0
-        Ref2    20      3       2
-        Ref3    0       50      100
-        Ref4    2       9       3
+        Sample   kmer_size Reference hits percentage
+        Sample1    20        Ref1      5     0.05
+        Sample2    20        Ref1      2     0.001
+        Sample1    20        Ref2     100    0.1
+        Sample2    20        Ref2      0     0.0
     */
     
     table = table_;
     percentageTable = percentageTable_;
-    referenceFilenames = referenceFilenames_;
-    sampleFilenames = sampleFilenames_;
+    referenceFilenames = removeSuffix(referenceFilenames_);
+    sampleFilenames = removeSuffix(sampleFilenames_);
     numberOfReferences = referenceFilenames.size();
     numberOfSamples = sampleFilenames.size();
     kmerSize = kmerSize_;
     writeColumnNames();
     writeDataInTable();
+}
+
+std::vector<std::string> TableWriter::removeSuffix(Filenames filenames) {
+    std::vector<std::string> filenamesNoSuffix;
+    for (std::string filename : filenames) {
+        int suffixStart = filename.find_last_of(SUFFIX_START_CHAR);
+        filenamesNoSuffix.push_back(filename.substr(0, suffixStart));
+    }
+    return filenamesNoSuffix;
 }
 
 void TableWriter::writeColumnNames() {
@@ -167,7 +173,8 @@ std::filesystem::path ResultsWriter::createResultsPath() {
 }
 
 void ResultsWriter::writeResultsTable() {
-    TableWriter writer(TABLE_FILENAME);
+    std::string filename = results.projectName + TABLE_SUFFIX;
+    TableWriter writer(filename);
     writer.writeTable(results.hitTable, results.percentageTable, results.kmerSize, results.referenceFilenames, results.sampleFilenames);
 }
 

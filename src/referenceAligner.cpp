@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <chrono>
+
 
 
 void Aligner::getVarFromTextIndex(TextIndex textIndex) {
@@ -121,9 +123,6 @@ void ReferenceAligner::convertKmersMapToVector(Kmers kmers) {
 void ReferenceAligner::calculateMatchPercentage() {
     int possibleKmersInReference = calculatePossibleKmersInReference();
     matchPercentage = 100 * ((double)totalNumberOfMatches / possibleKmersInReference);
-    std::cout << "hits :" << totalNumberOfMatches << std::endl;
-    std::cout << "possible kmers :" << possibleKmersInReference << std::endl;
-    std::cout << "percentage :" << matchPercentage  << std::endl;
 }
 
 int ReferenceAligner::calculatePossibleKmersInReference() {

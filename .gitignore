@@ -9,6 +9,7 @@ lib/
 libraries/
 obj/
 References/
+References_2/
 Results/
 Samples/
 test/
@@ -43,3 +44,8 @@ test/
 *.out
 *.app
 
+# Python Files
+*.py
+
+# dothfiles
+.*

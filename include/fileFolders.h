@@ -14,7 +14,7 @@ typedef std::vector<Sample> Samples;
 class Folder {
 
     protected:
-        char SUFFIX_START = '.';
+        char SUFFIX_START_CHAR = '.';
         char PATH_SEPARATOR = '/';
         const std::filesystem::path pathToFolder;
         Filenames filenames;

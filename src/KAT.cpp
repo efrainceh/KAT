@@ -1,18 +1,23 @@
 #include "../include/KAT.h"
 
+#include <chrono>
 
 
 Results KAT::align() {
-    std::cout << "Reading References..." << std::endl;
+    auto start = std::chrono::high_resolution_clock::now();
+    // std::cout << "Reading References..." << std::endl;
     readReferences();
-    std::cout << "Calculating References text indeces..." << std::endl;
+    // std::cout << "Calculating References text indeces..." << std::endl;
     calculateReferencesTextIndex();
-    std::cout << "Reading Samples..." << std::endl;
+    // std::cout << "Reading Samples..." << std::endl;
     readSamples();
-    std::cout << "Creating Samples kmers..." << std::endl;
+    // std::cout << "Creating Samples kmers..." << std::endl;
     calculateSamplesKmers();
-    std::cout << "Aligning..." << std::endl;
+    // std::cout << "Aligning..." << std::endl;
     alignAllSamplesToAllReferences();
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+    std::cout << duration.count()<< std::endl;
     return result;
 }
 

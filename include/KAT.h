@@ -29,9 +29,9 @@ class KAT {
 
     public:
         KAT(Input input_): input(input_) {
+            result.projectName = input.projectName;
             result.pathToInputFolder = input.pathToInputFolder;
         }
-        
         Results align();
 
 };

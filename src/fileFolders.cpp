@@ -19,7 +19,7 @@ std::string Folder::extractFilename(const std::filesystem::directory_entry file)
 }
 
 std::string Folder::extractSuffix(std::string filename) {
-    int suffixStart = filename.find_last_of(SUFFIX_START);
+    int suffixStart = filename.find_last_of(SUFFIX_START_CHAR);
     int suffixLength = filename.length() - suffixStart;
     return filename.substr(suffixStart, suffixLength);
 }

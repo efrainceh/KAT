@@ -13,15 +13,16 @@ std::ostream& operator<<(std::ostream &os, Matches &matches);
 
 struct Input {
 
+    std::string projectName;
     std::string pathToInputFolder;
     std::string filesSuffix;
     int kmerSize;
-    //std::vector<int> kmerSizes;
 
 };
 
 struct Results {
 
+    std::string projectName;
     std::string pathToInputFolder;
     int kmerSize;
     std::vector<Alignment> alignments;
@@ -36,14 +37,12 @@ class InputParser {
 
     private:
         int FAILED_INTEGER_CONVERSION = -1;
-        int MINIMUM_NUMBER_OF_ARGUMENTS = 5; // path, number_of_arguments, 3 variables
-        //int CORRECT_NUMBER_OF_ARGUMENTS = 5; // path, number_of_arguments, 3 variables
+        int MINIMUM_NUMBER_OF_ARGUMENTS = 6; // path, number_of_arguments, 3 variables
         int MINIMUM_KMER_SIZE = 4;
         int MAXIMUM_KMER_SIZE = 1001;
         Input input;
         
         bool minimumNumberOfArguments(int numberOfArguments);
-        //bool correctNumberOfArguments(int numberOfArguments);
         int parseKmerSize(std::string kmerSize);
         bool validKmerSize(int size);
 
@@ -86,9 +85,9 @@ class AlignmentWriter : public BaseWriter {
 class TableWriter : public BaseWriter {
 
     private:
-        std::string OUTPUT_SUFFIX = ".csv";
         std::vector<std::string> COLUMNS{"sample", "kmer_size", "reference", "hits", "percentage"};
         char DELIMITER = ',';
+        char SUFFIX_START_CHAR = '.';
         Matrix table;
         doubleMatrix percentageTable;
         Filenames referenceFilenames;
@@ -102,6 +101,7 @@ class TableWriter : public BaseWriter {
         void writeSampleData(int sampleNumber);
         void writeDataInTable();
         bool isLastColumn(int col);
+        std::vector<std::string> removeSuffix(Filenames filenames);
 
     public:
         TableWriter(std::string filename_) : BaseWriter(filename_) { }
@@ -116,7 +116,7 @@ class ResultsWriter {
         std::string RESULTS_FOLDER = "/Results";
         std::string ALIGNMENT_FILENAME_LINK = "_";
         std::string ALIGNMENT_FILENAME_SUFFIX = ".txt";
-        std::string TABLE_FILENAME = "alignment_table.csv";
+        std::string TABLE_SUFFIX = ".csv";
         Results results;
 
         void goToResultsFolder();
