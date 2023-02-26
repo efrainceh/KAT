@@ -2,7 +2,7 @@ SRC_DIR	:= src
 OBJ_DIR	:= obj
 BIN_DIR	:= bin
 
-EXE	:= $(BIN_DIR)/KAT-2.0
+EXE	:= $(BIN_DIR)/KAT-1.0
 SRC	:= $(wildcard $(SRC_DIR)/*.cpp)
 OBJ	:= $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
