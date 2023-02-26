@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include <chrono>
-
 
 
 void Aligner::getVarFromTextIndex(TextIndex textIndex) {
