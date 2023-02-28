@@ -99,6 +99,7 @@ Alignment ReferenceAligner::align(Sample sample) {
         MultipleAligner multipleAligner(TI[indexOfTI]);
         matchesPerTextIndex = multipleAligner.multipleAlign(vectorKmers);
         matchesToReference[indexOfTI] = matchesPerTextIndex;
+        addToUniqueMatches(matchesPerTextIndex);
         totalNumberOfMatches += multipleAligner.getNumberOfMatches();
     }
     calculateMatchPercentage();
@@ -118,9 +119,15 @@ void ReferenceAligner::convertKmersMapToVector(Kmers kmers) {
     }
 }
 
+void ReferenceAligner::addToUniqueMatches(MultipleMatches &matches) {
+    for (auto kmerAndMatch : matches) {
+        uniqueMatches[kmerAndMatch.first] = 1;
+    }
+}
+
 void ReferenceAligner::calculateMatchPercentage() {
     int possibleKmersInReference = calculatePossibleKmersInReference();
-    matchPercentage = 100 * ((double)totalNumberOfMatches / possibleKmersInReference);
+    matchPercentage = 100 * ((double)uniqueMatches.size() / possibleKmersInReference);
 }
 
 int ReferenceAligner::calculatePossibleKmersInReference() {
@@ -139,6 +146,7 @@ Alignment ReferenceAligner::createAlignment() {
     alignment.sampleID = sampleID;
     alignment.sampleToRefMatches = matchesToReference;
     alignment.numberOfMatches = totalNumberOfMatches;
+    alignment.numberOfUniqueMatches = uniqueMatches.size();
     alignment.matchPercentage = matchPercentage;   
     return alignment;
 }

@@ -50,7 +50,8 @@ void AlignmentWriter::writeFile(Alignment alignment_) {
         example:
             Reference: referenceID
             Sample: sampleID
-            Number of matches: 9 
+            Number of unique matches: 3
+            Number of matches: 9
             ATCAG 0 5 20 34
             AGGTG 0 3 14 55
             ATCAG 1 3
@@ -77,6 +78,7 @@ void AlignmentWriter::writeRefSeqSizes(std::vector<int> refSeqSizes) {
 }
 
 void AlignmentWriter::writeAlignmentResults() {
+    file << "Number of unique matches: " << alignment.numberOfUniqueMatches << std::endl;
     file << "Number of matches: " << alignment.numberOfMatches << std::endl;
     for (auto indexAndMultipleMatches : alignment.sampleToRefMatches) {
         int indexOfTI = indexAndMultipleMatches.first;
@@ -92,18 +94,19 @@ void AlignmentWriter::writeMatchesOfIndex(int indexOfTI, MultipleMatches &multip
 
 // -----------------------------------------------------------------------------------------------
 
-void TableWriter::writeTable(Matrix table_, doubleMatrix percentageTable_, int kmerSize_, Filenames referenceFilenames_, Filenames sampleFilenames_) {
+void TableWriter::writeTable(Matrix table_, Matrix uniqueHitTable_, doubleMatrix percentageTable_, int kmerSize_, Filenames referenceFilenames_, Filenames sampleFilenames_) {
     /* 
     Table example:
 
-        Sample   kmer_size Reference hits percentage
-        Sample1    20        Ref1      5     0.05
-        Sample2    20        Ref1      2     0.001
-        Sample1    20        Ref2     100    0.1
-        Sample2    20        Ref2      0     0.0
+        Sample   kmer_size Reference unique_hits hits percentage
+        Sample1    20        Ref1      3          5      0.05
+        Sample2    20        Ref1      2          2      0.001
+        Sample1    20        Ref2     70          70     0.1
+        Sample2    20        Ref2      0          0      0.0
     */
     
     table = table_;
+    uniqueHitTable = uniqueHitTable_;
     percentageTable = percentageTable_;
     referenceFilenames = removeSuffix(referenceFilenames_);
     sampleFilenames = removeSuffix(sampleFilenames_);
@@ -145,6 +148,7 @@ void TableWriter::writeSampleData(int sampleNumber) {
         file << kmerSize << DELIMITER;
         file << referenceFilenames[referenceNumber] << DELIMITER;
         file << table[referenceNumber][sampleNumber] << DELIMITER;
+        file << uniqueHitTable[referenceNumber][sampleNumber] << DELIMITER;
         file << percentageTable[referenceNumber][sampleNumber] << std::endl;
     }    
 }
@@ -175,7 +179,7 @@ std::filesystem::path ResultsWriter::createResultsPath() {
 void ResultsWriter::writeResultsTable() {
     std::string filename = results.projectName + TABLE_SUFFIX;
     TableWriter writer(filename);
-    writer.writeTable(results.hitTable, results.percentageTable, results.kmerSize, results.referenceFilenames, results.sampleFilenames);
+    writer.writeTable(results.hitTable, results.uniqueHitTable, results.percentageTable, results.kmerSize, results.referenceFilenames, results.sampleFilenames);
 }
 
 void ResultsWriter::writeResultsAlignmentFiles() {

@@ -28,6 +28,7 @@ struct Results {
     std::vector<Alignment> alignments;
     Filenames referenceFilenames;
     Filenames sampleFilenames;
+    Matrix uniqueHitTable;  // Total number of unique matches per sample per reference
     Matrix hitTable;      // Total number of matches per sample per reference
     doubleMatrix percentageTable;
 
@@ -85,10 +86,11 @@ class AlignmentWriter : public BaseWriter {
 class TableWriter : public BaseWriter {
 
     private:
-        std::vector<std::string> COLUMNS{"sample", "kmer_size", "reference", "hits", "percentage"};
+        std::vector<std::string> COLUMNS{"sample", "kmer_size", "reference", "hits", "unique_hits", "percentage"};
         char DELIMITER = ',';
         char SUFFIX_START_CHAR = '.';
         Matrix table;
+        Matrix uniqueHitTable;
         doubleMatrix percentageTable;
         Filenames referenceFilenames;
         Filenames sampleFilenames;
@@ -106,7 +108,7 @@ class TableWriter : public BaseWriter {
     public:
         TableWriter(std::string filename_) : BaseWriter(filename_) { }
 
-        void writeTable(Matrix table_, doubleMatrix percentageTable_, int kmerSize, Filenames referenceFilenames_, Filenames samplesFilenames_);
+        void writeTable(Matrix table_, Matrix uniqueHitTable_, doubleMatrix percentageTable_, int kmerSize, Filenames referenceFilenames_, Filenames samplesFilenames_);
 
 };
 
