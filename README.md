@@ -39,11 +39,12 @@ Reference ID
 Number of sequences in Reference file
 Number of basepairs in each sequence in Reference file
 Sample ID
+Number of unique matches
 Total number of matches
 found kmer / index of sequence in reference / index of matches for Khmer in that specific sequence of reference
 
 ![Textfile examples: NZ_CP055292.1_NC_003155.5.txt](/images/textfile_example.jpg)
 
-In the example, kmer AAACTGGGCAGCAGGGCGGG is found in Reference sequence 0, position 3383183
+In the example, kmer AAAAAAAAAC is found in Reference sequence 0, positions 211595 2296603 1409627 1170432
 
 
