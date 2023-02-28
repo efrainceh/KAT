@@ -1,7 +1,7 @@
 # Prerequisites
 *.d
 
-# Folders
+# Folders and Mac folder files
 bin/
 build/
 googletest/
@@ -13,6 +13,7 @@ References_2/
 Results/
 Samples/
 test/
+*.DS_Store
 
 # Compiled Object files
 *.slo
