@@ -33,7 +33,7 @@ A Results folder is created inside the Project Folder. This folder contains:
 
 ![Table example](/images/table_example.jpg)
 
-#### Textfile example: NZ_CP055292.1_NC_003155.5.txt
+#### Textfile example: NZ_CP008781.1_NZ_CP012480.1.txt
 
 Reference ID
 Number of sequences in Reference file
